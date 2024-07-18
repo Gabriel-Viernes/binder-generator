@@ -51,7 +51,7 @@ gatherInfo().then((data) => {
                 new Paragraph ({
                     style: "date",
                     alignment: AlignmentType.CENTER,
-                    text: `${convertToOrdinal(data[0].liturgicalDate.season_week)} ${capitalize(data[0].liturgicalDate.weekday)} of ${capitalize(data[0].liturgicalDate.season)} Time`
+                    text: `${data[0].liturgicalDate.celebrations[0].title}`
                 })
             ]
         }]
@@ -60,6 +60,8 @@ gatherInfo().then((data) => {
         fs.writeFileSync("test.doc", buffer);
     })
 })
+
+//`${convertToOrdinal(data[0].liturgicalDate.season_week)} ${capitalize(data[0].liturgicalDate.weekday)} of ${capitalize(data[0].liturgicalDate.season)} Time`
 
 
 

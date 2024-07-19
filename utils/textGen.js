@@ -61,9 +61,45 @@ function newLine() {
     })
 }
 
+function horizontalBorder() {
+    return new Paragraph({
+        border: {
+            bottom: {
+                color: "000000",
+                style: "single",
+                size: 2
+            }
+        }
+    })
+}
+
+function highlighted(text){
+    return new Paragraph({
+        style: "highlighted",
+        children: [
+            new TextRun({
+                text: text,
+                bold: true
+            })
+        ]
+    })
+}
+
+function intentions(data, lan, time) {
+    let children = [];
+    let dead = "For the faithful departed __________, ";
+    for(let i = 0; i < data.length; i++) {
+        if(data[i].deceasedParishInclude === true){
+
+        }
+    }
+}
+
 module.exports.centeredHeader = centeredHeader;
 module.exports.redSectionHeader = redSectionHeader;
 module.exports.normalText = normalText;
 module.exports.callAndResponse = callAndResponse;
 module.exports.penitentialAct = penitentialAct;
 module.exports.newLine = newLine;
+module.exports.horizontalBorder = horizontalBorder;
+module.exports.highlighted = highlighted;

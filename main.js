@@ -2,12 +2,13 @@ const docx = require("docx");
 const fs = require("fs");
 const csvParse = require("csv-parse/sync");
 const getLiturgicalDate= require("./utils/liturgicalDate.js");
-const {capitalize, convertToOrdinal, convertMonthToWords } = require("./utils/textUtils.js")
-const { centeredHeader, redSectionHeader, normalText, callAndResponse, penitentialAct, newLine } = require("./utils/textGen.js");
+const { weekendEngGen } = require("./utils/weekendEngGen.js");
 
 
-const { AlignmentType, Document, HeadingLevel, Packer, Paragraph, TextRun, PageBreak } = docx;
+const { AlignmentType, Document, HeadingLevel, HighlightColor, Packer, Paragraph, TextRun, PageBreak } = docx;
 const { parse } = csvParse;
+
+
 
 
 async function gatherInfo() {
@@ -29,7 +30,8 @@ async function gatherInfo() {
 let doc;
 
 gatherInfo().then((data) => {
-    console.log(data);
+    const textBodyEng = weekendEngGen(data);
+
     doc = new Document ({
         styles: {
             paragraphStyles: [
@@ -59,48 +61,33 @@ gatherInfo().then((data) => {
                         size: 28,
                         font: "Arial"
                     }
+                },
+                {
+                    id: "highlighted",
+                    name: "highlighted",
+                    run: {
+                        size: 28,
+                        font: "Arial",
+                        shading: {
+                            fill: "ffff00"
+                        }
+                    }
                 }
             ]
         },
         sections: [
             {
-                children: [
-                    centeredHeader(`${convertMonthToWords(data[0].date.getUTCMonth()+1)} ${data[0].date.getUTCDate()}, ${data[0].date.getUTCFullYear()}`),
-                    centeredHeader(`${data[0].liturgicalDate.celebrations[0].title}`
-),
-                    newLine(),
-                    redSectionHeader("Celebrant:"),
-                    normalText(data[0].introEng),
-                    newLine(),
-                    centeredHeader("Penitential Act"),
-                    redSectionHeader("Deacon:"),
-                    callAndResponse(data[0].penitAct, " Lord have mercy"),
-                    newLine(),
-                    callAndResponse(data[1].penitAct, " Christ have mercy"),
-                    newLine(),
-                    callAndResponse(data[2].penitAct, " Lord have mercy"),
-                    redSectionHeader("Celebrant:"),
-                    normalText("May Almighty God have mercy on us, forgive us our sins and bring us to everlasting life."),
-                    new Paragraph({
-                        style: "normal",
-                        children: [
-                            new TextRun({
-                                text: "Gloria:",
-                                bold: true
-                            })
-                        ]
-                    }),
-                    new Paragraph({
-                        children: [
-                            new PageBreak()
-                        ]
-                    }),
-                    centeredHeader(`Prayers of the Faithful, ${convertMonthToWords(data[0].date.getUTCMonth()+1)} ${data[0].date.getUTCDate()-1}-${data[0].date.getUTCDate()+5}`)
-
-
-
-                                            
-                ]
+                properties: {
+                    page: {
+                        margin: {
+                            top: 500,
+                            right: 1000,
+                            bottom: 500,
+                            left: 1000
+                        }
+                    }
+                },
+                children: textBodyEng
             }
         ]
     })

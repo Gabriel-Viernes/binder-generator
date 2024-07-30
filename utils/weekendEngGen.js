@@ -1,10 +1,62 @@
 const { AlignmentType, HeadingLevel, Paragraph, TextRun, PageBreak } = require("docx");
 const { centeredHeader, redSectionHeader, normalText, callAndResponse, penitentialAct, newLine, horizontalBorder, highlighted } = require("./textGen.js");
 const {capitalize, convertToOrdinal, convertMonthToWords } = require("./textUtils.js")
+const { parse } = require("csv-parse/sync");
+const fs = require("fs")
+
+function getIntentions() {
+    let intentions = fs.readFileSync("./intentions.csv", "utf8");
+    let deceasedIntentions = fs.readFileSync("./deceasedIntentions.csv", "utf8");
+    let parishDeceased = fs.readFileSync("./input.csv", "utf8");
+
+    intentions = parse(intentions, {
+        bom: true,
+        columns: true
+        
+    })
+
+    deceasedIntentions = parse(deceasedIntentions, {
+        bom: true,
+        columns:true
+    })
+
+    parishDeceased = parse(parishDeceased, {
+        bom: true,
+        columns: true
+    })
+
+
+    let data = [intentions, deceasedIntentions, parishDeceased];
+    return data;
+}
+
+function generateIntentions(data, day) {
+    //day valid values: [sat16, sun8, sun930, sun1130, sun1330, sun1600, mon9, tue9, tue19, wed9, thu9, fri9]
+    let finalParagraph = [];
+    function getDayIntentions() {
+        let intentions = [];
+        let deceasedIntentions = [];
+
+        for(let i = 0; i < data[0].length; i++) {
+            if(day.length > 0 || day != undefined) {
+                let temp = data[0][parseInt(i)][`${day}`]
+                if(temp != undefined && temp.length > 0) {
+                    intentions.push(temp);
+                }
+            }
+        }
+
+    }
+    getDayIntentions();
+}
 
 
 
 function weekendEngGen(data) {
+    let intentions = getIntentions();
+    generateIntentions(intentions, "sat16");
+    
+    console.log(intentions)
     let textBodyEng = [
         centeredHeader(`${convertMonthToWords(data[0].date.getUTCMonth()+1)} ${data[0].date.getUTCDate()}, ${data[0].date.getUTCFullYear()}`),
         centeredHeader(`${data[0].liturgicalDate.celebrations[0].title}`

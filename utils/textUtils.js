@@ -18,6 +18,11 @@ function capitalize(input) {
     return firstLetter + input.substring(1);
 }
 
+function parseDayAndTime(input) {
+    //correct format is day name abbreviation + military time
+    //ex: sat1600, sat0900
+}
+
 function convertMonthToWords(input) {
     switch(input) {
         case 1:

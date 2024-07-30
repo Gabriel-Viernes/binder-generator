@@ -19,7 +19,6 @@ async function gatherInfo() {
         columns:true
     });
 
-    console.log(data);
 
     data[0].date = new Date(data[0].date);
 

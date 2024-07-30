@@ -4,20 +4,19 @@ const {capitalize, convertToOrdinal, convertMonthToWords } = require("./textUtil
 const { parse } = require("csv-parse/sync");
 const fs = require("fs")
 
-function getIntentions() {
+function getIntentions(day) {
     let intentions = fs.readFileSync("./intentions.csv", "utf8");
     let deceasedIntentions = fs.readFileSync("./deceasedIntentions.csv", "utf8");
     let input = fs.readFileSync("./input.csv", "utf8");
 
-    intentions = parse(intentions, {
+    intentions = parse(intentions.trim(), {
         bom: true,
-        columns: true
-        
+        relax_column_count: true
     })
 
     deceasedIntentions = parse(deceasedIntentions, {
         bom: true,
-        columns:true
+        relax_column_count: true
     })
 
     let parishIntentions = parse(input, {
@@ -33,51 +32,26 @@ function getIntentions() {
         }
     }
 
+    console.log("-------------------------------------------\nINTENTIONS")
+    console.log(intentions)
+    console.log("-------------------------------------------\ndeceasedINTENTIONS")
+    console.log(deceasedIntentions)
+
+    if(day) {
+        for(let i = 0; i < intentions[0].length; i++) {}
+
+    }
+
 
     let data = [intentions, deceasedIntentions, deceasedParish];
     return data;
 }
 
-function generateIntentions(data, day) {
-    //day valid values: [sat16, sun8, sun930, sun1130, sun1330, sun1600, mon9, tue9, tue19, wed9, thu9, fri9]
-    let finalParagraph = [];
-    function getDayIntentions() {
-        let intentions = [];
-        let deceasedIntentions = [];
-
-        for(let i = 0; i < data[0].length; i++) {
-            if(day.length > 0 && day != undefined) {
-                let temp = data[0][parseInt(i)][`${day}`];
-                if(temp.length > 0 && temp != undefined) {
-                    intentions.push(temp);
-                }
-            }
-        }
-
-        for(let i = 0; i < data[1].length; i++) {
-            if(day.length > 0 && day != undefined) {
-                let temp = data[1][parseInt(i)][`${day}`];
-                if(temp.length > 0 && temp != undefined) {
-                    deceasedIntentions.push(temp);
-                }
-            }
-        }
-        return [intentions, deceasedIntentions]
-
-
-
-    }
-    return getDayIntentions();
-}
-
 
 
 function weekendEngGen(data) {
-    let intentions = getIntentions();
-    console.log(intentions)
-    intentions = generateIntentions(intentions, "sat16");
-    
-    console.log(intentions)
+    getIntentions()
+   
     let textBodyEng = [
         centeredHeader(`${convertMonthToWords(data[0].date.getUTCMonth()+1)} ${data[0].date.getUTCDate()}, ${data[0].date.getUTCFullYear()}`),
         centeredHeader(`${data[0].liturgicalDate.celebrations[0].title}`

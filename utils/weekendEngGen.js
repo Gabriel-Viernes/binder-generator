@@ -7,7 +7,7 @@ const fs = require("fs")
 function getIntentions() {
     let intentions = fs.readFileSync("./intentions.csv", "utf8");
     let deceasedIntentions = fs.readFileSync("./deceasedIntentions.csv", "utf8");
-    let parishDeceased = fs.readFileSync("./input.csv", "utf8");
+    let input = fs.readFileSync("./input.csv", "utf8");
 
     intentions = parse(intentions, {
         bom: true,
@@ -20,13 +20,21 @@ function getIntentions() {
         columns:true
     })
 
-    parishDeceased = parse(parishDeceased, {
+    let parishIntentions = parse(input, {
         bom: true,
         columns: true
     })
 
+    let deceasedParish = [];
 
-    let data = [intentions, deceasedIntentions, parishDeceased];
+    for(let i = 0; i < parishIntentions.length; i++) {
+        if(parishIntentions[i].sick.length > 0 && parishIntentions[i] != undefined) {
+            deceasedParish.push(parishIntentions[i].sick)
+        }
+    }
+
+
+    let data = [intentions, deceasedIntentions, deceasedParish];
     return data;
 }
 
@@ -38,23 +46,36 @@ function generateIntentions(data, day) {
         let deceasedIntentions = [];
 
         for(let i = 0; i < data[0].length; i++) {
-            if(day.length > 0 || day != undefined) {
-                let temp = data[0][parseInt(i)][`${day}`]
-                if(temp != undefined && temp.length > 0) {
+            if(day.length > 0 && day != undefined) {
+                let temp = data[0][parseInt(i)][`${day}`];
+                if(temp.length > 0 && temp != undefined) {
                     intentions.push(temp);
                 }
             }
         }
 
+        for(let i = 0; i < data[1].length; i++) {
+            if(day.length > 0 && day != undefined) {
+                let temp = data[1][parseInt(i)][`${day}`];
+                if(temp.length > 0 && temp != undefined) {
+                    deceasedIntentions.push(temp);
+                }
+            }
+        }
+        return [intentions, deceasedIntentions]
+
+
+
     }
-    getDayIntentions();
+    return getDayIntentions();
 }
 
 
 
 function weekendEngGen(data) {
     let intentions = getIntentions();
-    generateIntentions(intentions, "sat16");
+    console.log(intentions)
+    intentions = generateIntentions(intentions, "sat16");
     
     console.log(intentions)
     let textBodyEng = [

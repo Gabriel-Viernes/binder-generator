@@ -1,5 +1,5 @@
 const { AlignmentType, HeadingLevel, Paragraph, TextRun, PageBreak } = require("docx");
-const { centeredHeader, redSectionHeader, normalText, callAndResponse, penitentialAct, newLine, horizontalBorder, highlighted } = require("./textGen.js");
+const { intention, centeredHeader, redSectionHeader, normalText, callAndResponse, penitentialAct, newLine, horizontalBorder, highlighted } = require("./textGen.js");
 const {capitalize, convertToOrdinal, convertMonthToWords } = require("./textUtils.js")
 const { getIntentions } = require("./data.js");
 
@@ -90,12 +90,14 @@ function weekendEngGen(data) {
         style: "normal",
         children: sick
     }))
+
+    let intentions = intention("sat1600");
+
+    for(let i = 0; i < intentions.length; i++) {
+        textBodyEng.push(intentions[i])
+    }
+
     
-    textBodyEng.push(
-        horizontalBorder(),
-        newLine(),
-        highlighted("Saturday 4 p.m."),
-    );
 
 
     return textBodyEng;

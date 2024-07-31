@@ -8,17 +8,14 @@ function getIntentions(day) {
 
     intentions = parse(intentions.trim(), {
         bom: true,
-        relax_column_count: true
     })
 
     deceasedIntentions = parse(deceasedIntentions, {
         bom: true,
-        relax_column_count: true
     })
 
     let parishIntentions = parse(input, {
         bom: true,
-        columns: true
     })
 
     let deceasedParish = [];
@@ -29,7 +26,7 @@ function getIntentions(day) {
         }
     }
 
-
+    let data;
     let intentionsFiltered = []
     let deceasedIntentionsFiltered = []
 
@@ -55,14 +52,18 @@ function getIntentions(day) {
             }
         }
 
+        data = { intentionsFiltered, deceasedIntentionsFiltered, deceasedParish }    
+        return data;
+
     }
 
     console.log(intentionsFiltered)
     console.log(deceasedIntentionsFiltered)
 
 
-    let data = { intentions, deceasedIntentions, deceasedParish };
+    data = { intentions, deceasedIntentions, deceasedParish };
     return data;
 }
+console.log(getIntentions())
 
 module.exports.getIntentions = getIntentions;

@@ -4,12 +4,8 @@ const csvParse = require("csv-parse/sync");
 const getLiturgicalDate= require("./utils/liturgicalDate.js");
 const { weekendEngGen } = require("./utils/weekendEngGen.js");
 
-
 const { AlignmentType, Document, HeadingLevel, HighlightColor, Packer, Paragraph, TextRun, PageBreak } = docx;
 const { parse } = csvParse;
-
-
-
 
 async function gatherInfo() {
     let data = fs.readFileSync("./input.csv", 'utf8');

@@ -21,7 +21,49 @@ function capitalize(input) {
 function parseDayAndTime(input) {
     //correct format is day name abbreviation + military time
     //ex: sat1600, sat0900
+    let parsed = "";
+    let day = input.slice(0,3)
+
+    switch(day) {
+        case "sun":
+            parsed += "Sunday "
+            break;
+        case "mon":
+            parsed += "Monday ";
+            break;
+        case "tue": 
+            parsed += "Tuesday ";
+            break;
+        case "wed":
+            parsed += "Wednesday ";
+            break;
+        case "thu":
+            parsed += "Thursday ";
+            break;
+        case "fri":
+            parsed += "Friday";
+            break;
+        case "sat":
+            parsed += "Saturday ";
+            break;
+    }
+
+    let ampm = "";
+    
+    if(parseInt(input.slice(3,5)) > 12) {
+        ampm = "P.M.";
+        parsed += `${parseInt(input.slice(3,5)) - 12}:`
+        parsed += `${input.slice(5,7)} ${ampm}`;
+    } else {
+        ampm = "A.M.";
+        parsed += `${input.slice(3,5)}:`;
+        parsed += `${input.slice(5,7)} ${ampm}`;
+    }
+    console.log(parsed);
+    return parsed
 }
+
+parseDayAndTime("sat1600")
 
 function convertMonthToWords(input) {
     switch(input) {
@@ -55,3 +97,4 @@ function convertMonthToWords(input) {
 module.exports.convertToOrdinal = convertToOrdinal;
 module.exports.capitalize = capitalize;
 module.exports.convertMonthToWords = convertMonthToWords;
+module.exports.parseDayAndTime = parseDayAndTime;

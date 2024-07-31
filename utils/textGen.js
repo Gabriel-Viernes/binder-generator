@@ -1,5 +1,6 @@
 const { Paragraph, TextRun, AlignmentType } = require("docx");
 const { getIntentions } = require("./data.js");
+const { parseDayAndTime } = require("./textUtils.js");
 
 function centeredHeader(text) {
 
@@ -38,7 +39,80 @@ function callAndResponse(text, secondText) {
 }
 
 function intention(dayTime) {
-    let { intentions, deceasedIntentions, deceasedParish } = getIntentions(dayTime);
+    let data;
+    if(dayTime) {
+        data = getIntentions(dayTime);
+    } else {
+        data = getIntentions();
+    }
+
+    let { intentions, deceasedIntentions, deceasedParish } = data;
+    console.log(intentions, deceasedIntentions, deceasedParish)
+
+    let deceased;
+
+    let bodyText = [];
+
+    for(let i = 0; i < intentions.length; i++) {
+
+        bodyText.push(highlighted(parseDayAndTime(intentions[i][0])))
+        bodyText.push(newLine())
+
+        let currentDayIntentions = [
+            new TextRun({
+                style: "normal",
+                text: "*For the faithful departed _________ "
+            })]
+        
+        deceased = deceasedParish.concat(deceasedIntentions[i].slice(1))
+
+        deceased = deceased.filter((value) => 
+            value.length > 0
+        )
+
+        console.log(deceased)
+        
+        for (let j = 0; j < deceased.length; j++) {
+
+            if(deceased[j] != undefined && deceased[j].length > 0) {
+                if(j == deceased.length - 1) {
+                    currentDayIntentions.push(new TextRun({
+                        style: "normal",
+                        bold: true,
+                        text: `and ${deceased[j]},`
+                    }))               
+
+                    break;
+                }
+
+                currentDayIntentions.push(new TextRun({
+                    style: "normal",
+                    bold:true,
+                    text: `${deceased[j]}, `
+                }))
+            }
+
+        }
+
+
+        currentDayIntentions.push(new TextRun({
+            style: "normal",
+            text: " may they rest in peace."
+        }))
+        currentDayIntentions.push(new TextRun({
+            style: "normal",
+            bold: true,
+            text: " We pray to the Lord."
+        }))
+        bodyText.push(new Paragraph({
+            style: "normal",
+            children: currentDayIntentions
+        }))
+        bodyText.push(newLine())
+    }
+
+
+    return bodyText;
 }
 
 function penitentialAct(data, lang) {
@@ -90,15 +164,7 @@ function highlighted(text){
     })
 }
 
-function intentions(data, lan, time) {
-    let children = [];
-    let dead = "For the faithful departed __________, ";
-    for(let i = 0; i < data.length; i++) {
-        if(data[i].deceasedParishInclude === true){
 
-        }
-    }
-}
 
 module.exports.centeredHeader = centeredHeader;
 module.exports.redSectionHeader = redSectionHeader;
@@ -108,3 +174,4 @@ module.exports.penitentialAct = penitentialAct;
 module.exports.newLine = newLine;
 module.exports.horizontalBorder = horizontalBorder;
 module.exports.highlighted = highlighted;
+module.exports.intention = intention;

@@ -1,4 +1,5 @@
 const { Paragraph, TextRun, AlignmentType } = require("docx");
+const { getIntentions } = require("./data.js");
 
 function centeredHeader(text) {
 
@@ -34,6 +35,10 @@ function callAndResponse(text, secondText) {
             })
         ]
     })
+}
+
+function intention(dayTime) {
+    let { intentions, deceasedIntentions, deceasedParish } = getIntentions(dayTime);
 }
 
 function penitentialAct(data, lang) {

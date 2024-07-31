@@ -1,56 +1,11 @@
 const { AlignmentType, HeadingLevel, Paragraph, TextRun, PageBreak } = require("docx");
 const { centeredHeader, redSectionHeader, normalText, callAndResponse, penitentialAct, newLine, horizontalBorder, highlighted } = require("./textGen.js");
 const {capitalize, convertToOrdinal, convertMonthToWords } = require("./textUtils.js")
-const { parse } = require("csv-parse/sync");
-const fs = require("fs")
-
-function getIntentions(day) {
-    let intentions = fs.readFileSync("./intentions.csv", "utf8");
-    let deceasedIntentions = fs.readFileSync("./deceasedIntentions.csv", "utf8");
-    let input = fs.readFileSync("./input.csv", "utf8");
-
-    intentions = parse(intentions.trim(), {
-        bom: true,
-        relax_column_count: true
-    })
-
-    deceasedIntentions = parse(deceasedIntentions, {
-        bom: true,
-        relax_column_count: true
-    })
-
-    let parishIntentions = parse(input, {
-        bom: true,
-        columns: true
-    })
-
-    let deceasedParish = [];
-
-    for(let i = 0; i < parishIntentions.length; i++) {
-        if(parishIntentions[i].sick.length > 0 && parishIntentions[i] != undefined) {
-            deceasedParish.push(parishIntentions[i].sick)
-        }
-    }
-
-    console.log("-------------------------------------------\nINTENTIONS")
-    console.log(intentions)
-    console.log("-------------------------------------------\ndeceasedINTENTIONS")
-    console.log(deceasedIntentions)
-
-    if(day) {
-        for(let i = 0; i < intentions[0].length; i++) {}
-
-    }
-
-
-    let data = [intentions, deceasedIntentions, deceasedParish];
-    return data;
-}
+const { getIntentions } = require("./data.js");
 
 
 
 function weekendEngGen(data) {
-    getIntentions()
    
     let textBodyEng = [
         centeredHeader(`${convertMonthToWords(data[0].date.getUTCMonth()+1)} ${data[0].date.getUTCDate()}, ${data[0].date.getUTCFullYear()}`),
